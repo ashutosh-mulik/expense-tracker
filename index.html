@@ -117,11 +117,14 @@
                     >
                         Budget
                     </div>
-                    <div
-                        id="total-budget"
-                        class="text-2xl font-bold text-blue-900 dark:text-blue-100 mt-2"
-                    >
-                        ₹0
+                    <div class="flex items-center justify-center gap-2 mt-2">
+                        <span id="total-budget" class="text-2xl font-bold text-blue-900 dark:text-blue-100">₹0</span>
+                        <button id="edit-budget-btn" onclick="showEditBudget()" class="ml-2 px-2 py-1 text-xs bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded hover:bg-blue-300 dark:hover:bg-blue-700">Edit</button>
+                    </div>
+                    <div id="edit-budget-container" class="flex items-center justify-center gap-2 mt-2 hidden">
+                        <input type="number" id="edit-budget-input" class="w-24 px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 text-base" min="0" />
+                        <button onclick="saveEditedBudget()" class="px-2 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600">Save</button>
+                        <button onclick="cancelEditBudget()" class="px-2 py-1 text-xs bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-400 dark:hover:bg-gray-600">Cancel</button>
                     </div>
                 </div>
                 <div
@@ -282,12 +285,31 @@
                 }
             })();
 
+
             function setBudget() {
                 const input = document.getElementById("budget");
                 budget = parseFloat(input.value) || 0;
                 input.value = "";
                 saveToLocalDB();
                 updateUI();
+            }
+
+            // --- Edit Budget Functionality ---
+            function showEditBudget() {
+                document.getElementById("edit-budget-container").classList.remove("hidden");
+                document.getElementById("edit-budget-btn").classList.add("hidden");
+                document.getElementById("edit-budget-input").value = budget;
+            }
+            function saveEditedBudget() {
+                const newBudget = parseFloat(document.getElementById("edit-budget-input").value) || 0;
+                budget = newBudget;
+                saveToLocalDB();
+                updateUI();
+                cancelEditBudget();
+            }
+            function cancelEditBudget() {
+                document.getElementById("edit-budget-container").classList.add("hidden");
+                document.getElementById("edit-budget-btn").classList.remove("hidden");
             }
 
             function addExpense() {
@@ -317,18 +339,18 @@
                 updateUI();
             }
 
+
             function updateUI() {
                 // Budget Insights
                 const totalSpent = expenses.reduce(
                     (sum, exp) => sum + exp.amount,
                     0,
                 );
-                document.getElementById("total-budget").textContent =
-                    `₹${budget}`;
-                document.getElementById("total-spent").textContent =
-                    `₹${totalSpent}`;
-                document.getElementById("remaining-budget").textContent =
-                    `₹${budget - totalSpent}`;
+                document.getElementById("total-budget").textContent = `₹${budget}`;
+                document.getElementById("total-spent").textContent = `₹${totalSpent}`;
+                document.getElementById("remaining-budget").textContent = `₹${budget - totalSpent}`;
+                // Hide edit UI if open
+                cancelEditBudget();
 
                 // Expense Table
                 const table = document.getElementById("expense-table");
