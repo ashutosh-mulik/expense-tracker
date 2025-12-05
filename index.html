@@ -1,147 +1,140 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Expense Tracker with Budget Insights</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <!-- Tailwind CSS CDN -->
-        <script src="https://cdn.tailwindcss.com"></script>
-    </head>
-    <body
-        class="bg-gradient-to-br from-blue-50 to-green-50 min-h-screen flex items-center justify-center"
-    >
-        <div
-            class="bg-white shadow-2xl rounded-2xl p-6 md:p-10 w-full max-w-2xl"
-        >
-            <h1 class="text-3xl font-bold mb-6 text-center text-blue-700">
-                Expense Tracker
-            </h1>
+        <head>
+                <meta charset="UTF-8" />
+                <title>Expense Tracker with Budget Insights</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <!-- Tailwind CSS CDN -->
+                <script src="https://cdn.tailwindcss.com"></script>
+                <script>
+                    tailwind.config = {
+                        darkMode: 'class',
+                        theme: {
+                            extend: {
+                                colors: {
+                                    primary: '#2563eb',
+                                    accent: '#fbbf24',
+                                }
+                            }
+                        }
+                    }
+                </script>
+        </head>
+    <body class="bg-gradient-to-br from-blue-50 to-green-50 dark:from-gray-900 dark:to-gray-800 min-h-screen flex items-center justify-center transition-colors">
+        <div class="bg-white dark:bg-gray-900 shadow-2xl rounded-2xl p-6 md:p-10 w-full max-w-2xl transition-colors">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-center text-blue-700 dark:text-blue-300">Expense Tracker</h1>
+                <button id="theme-toggle" aria-label="Toggle dark mode" class="ml-4 p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                  <span id="theme-toggle-icon">🌙</span>
+                </button>
+            </div>
 
             <!-- Budget & Expense Inputs -->
             <div class="flex flex-col md:flex-row gap-4 mb-8">
                 <div class="flex-1">
-                    <label
-                        class="block text-gray-700 font-semibold mb-1"
-                        for="budget"
-                        >Monthly Budget</label
-                    >
+                    <label class="block text-gray-700 dark:text-gray-200 font-semibold mb-1" for="budget">Monthly Budget</label>
                     <div class="flex gap-2">
-                        <input
-                            type="number"
-                            id="budget"
-                            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            placeholder="Budget"
-                            min="0"
-                        />
-                        <button
-                            onclick="setBudget()"
-                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                        >
-                            Set
-                        </button>
+                        <input type="number" id="budget" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700" placeholder="Budget" min="0" />
+                        <button onclick="setBudget()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Set</button>
                     </div>
                 </div>
                 <div class="flex-1">
-                    <label
-                        class="block text-gray-700 font-semibold mb-1"
-                        for="expense-name"
-                        >Expense</label
-                    >
+                    <label class="block text-gray-700 dark:text-gray-200 font-semibold mb-1" for="expense-name">Expense</label>
                     <div class="flex gap-2 mb-2">
-                        <input
-                            type="text"
-                            id="expense-name"
-                            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            placeholder="Name"
-                        />
-                        <input
-                            type="number"
-                            id="expense-amount"
-                            class="w-28 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            placeholder="₹"
-                            min="0"
-                        />
-                        <button
-                            onclick="addExpense()"
-                            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                        >
-                            Add
-                        </button>
+                        <input type="text" id="expense-name" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700" placeholder="Name" />
+                        <input type="number" id="expense-amount" class="w-24 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700" placeholder="₹" min="0" />
+                        <select id="expense-category" class="w-28 px-2 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700">
+                            <option value="Groceries">Groceries</option>
+                            <option value="Dining">Dining</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Utilities">Utilities</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Misc">Misc</option>
+                        </select>
+                        <button onclick="addExpense()" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Add</button>
                     </div>
                 </div>
             </div>
 
             <!-- Insights Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <div class="bg-blue-100 rounded-lg p-4 text-center">
-                    <div class="text-sm text-blue-700 font-semibold">
-                        Budget
-                    </div>
-                    <div
-                        id="total-budget"
-                        class="text-xl font-bold text-blue-900"
-                    >
-                        ₹0
-                    </div>
+                <div class="bg-blue-100 dark:bg-blue-900/40 rounded-lg p-4 text-center transition-colors">
+                    <div class="text-sm text-blue-700 dark:text-blue-200 font-semibold">Budget</div>
+                    <div id="total-budget" class="text-xl font-bold text-blue-900 dark:text-blue-100">₹0</div>
                 </div>
-                <div class="bg-red-100 rounded-lg p-4 text-center">
-                    <div class="text-sm text-red-700 font-semibold">Spent</div>
-                    <div
-                        id="total-spent"
-                        class="text-xl font-bold text-red-900"
-                    >
-                        ₹0
-                    </div>
+                <div class="bg-red-100 dark:bg-red-900/40 rounded-lg p-4 text-center transition-colors">
+                    <div class="text-sm text-red-700 dark:text-red-200 font-semibold">Spent</div>
+                    <div id="total-spent" class="text-xl font-bold text-red-900 dark:text-red-100">₹0</div>
                 </div>
-                <div class="bg-green-100 rounded-lg p-4 text-center">
-                    <div class="text-sm text-green-700 font-semibold">
-                        Remaining
-                    </div>
-                    <div
-                        id="remaining-budget"
-                        class="text-xl font-bold text-green-900"
-                    >
-                        ₹0
-                    </div>
+                <div class="bg-green-100 dark:bg-green-900/40 rounded-lg p-4 text-center transition-colors">
+                    <div class="text-sm text-green-700 dark:text-green-200 font-semibold">Remaining</div>
+                    <div id="remaining-budget" class="text-xl font-bold text-green-900 dark:text-green-100">₹0</div>
                 </div>
             </div>
 
             <!-- Expense Table -->
             <div class="overflow-x-auto mb-6">
-                <table
-                    class="min-w-full text-sm text-left border rounded-lg overflow-hidden"
-                >
-                    <thead class="bg-gray-100">
+                <table class="min-w-full text-sm text-left border rounded-lg overflow-hidden">
+                    <thead class="bg-gray-100 dark:bg-gray-800">
                         <tr>
-                            <th class="py-2 px-4 font-semibold text-gray-700">
-                                #
-                            </th>
-                            <th class="py-2 px-4 font-semibold text-gray-700">
-                                Name
-                            </th>
-                            <th class="py-2 px-4 font-semibold text-gray-700">
-                                Amount (₹)
-                            </th>
-                            <th class="py-2 px-4 font-semibold text-gray-700">
-                                Action
-                            </th>
+                            <th class="py-2 px-4 font-semibold text-gray-700 dark:text-gray-200">#</th>
+                            <th class="py-2 px-4 font-semibold text-gray-700 dark:text-gray-200">Name</th>
+                            <th class="py-2 px-4 font-semibold text-gray-700 dark:text-gray-200">Amount (₹)</th>
+                            <th class="py-2 px-4 font-semibold text-gray-700 dark:text-gray-200">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="expense-table" class="bg-white">
+                    <tbody id="expense-table" class="bg-white dark:bg-gray-900">
                         <!-- Expenses will be injected here -->
                     </tbody>
                 </table>
-                <div id="no-expenses" class="text-center text-gray-400 py-4">
-                    No expenses yet.
-                </div>
+                <div id="no-expenses" class="text-center text-gray-400 dark:text-gray-500 py-4">No expenses yet.</div>
             </div>
 
+            <!-- Category Chart & Insights -->
+            <div class="mb-8">
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                    <h2 class="font-semibold mb-2 text-gray-700 dark:text-gray-200">Category-wise Expenses</h2>
+                    <canvas id="categoryChart" height="120"></canvas>
+                    <div id="category-insight" class="mt-2 text-sm text-gray-700 dark:text-gray-200"></div>
+                </div>
+            </div>
             <!-- Breakdown -->
-            <div id="breakdown" class="text-gray-700"></div>
+            <div id="breakdown" class="text-gray-700 dark:text-gray-200"></div>
         </div>
         <script>
             let budget = 0;
             let expenses = [];
+            let categoryChart = null;
+
+            // Dark mode toggle logic
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const themeToggleIcon = document.getElementById('theme-toggle-icon');
+            function setDarkMode(enabled) {
+                if (enabled) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                    if(themeToggleIcon) themeToggleIcon.textContent = '☀️';
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                    if(themeToggleIcon) themeToggleIcon.textContent = '🌙';
+                }
+            }
+            function toggleTheme() {
+                const isDark = document.documentElement.classList.contains('dark');
+                setDarkMode(!isDark);
+            }
+            if(themeToggleBtn) themeToggleBtn.onclick = toggleTheme;
+            // On load, set theme from localStorage or system
+            (function() {
+                const saved = localStorage.getItem('theme');
+                if(saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    setDarkMode(true);
+                } else {
+                    setDarkMode(false);
+                }
+            })();
 
             function setBudget() {
                 const input = document.getElementById("budget");
@@ -151,17 +144,14 @@
             }
 
             function addExpense() {
-                const name = document
-                    .getElementById("expense-name")
-                    .value.trim();
-                const amount =
-                    parseFloat(
-                        document.getElementById("expense-amount").value,
-                    ) || 0;
-                if (name && amount > 0) {
-                    expenses.push({ name, amount });
+                const name = document.getElementById("expense-name").value.trim();
+                const amount = parseFloat(document.getElementById("expense-amount").value) || 0;
+                const category = document.getElementById("expense-category").value;
+                if (name && amount > 0 && category) {
+                    expenses.push({ name, amount, category });
                     document.getElementById("expense-name").value = "";
                     document.getElementById("expense-amount").value = "";
+                    document.getElementById("expense-category").value = "Groceries";
                     updateUI();
                 }
             }
@@ -173,16 +163,10 @@
 
             function updateUI() {
                 // Budget Insights
-                const totalSpent = expenses.reduce(
-                    (sum, exp) => sum + exp.amount,
-                    0,
-                );
-                document.getElementById("total-budget").textContent =
-                    `₹${budget}`;
-                document.getElementById("total-spent").textContent =
-                    `₹${totalSpent}`;
-                document.getElementById("remaining-budget").textContent =
-                    `₹${budget - totalSpent}`;
+                const totalSpent = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+                document.getElementById("total-budget").textContent = `₹${budget}`;
+                document.getElementById("total-spent").textContent = `₹${totalSpent}`;
+                document.getElementById("remaining-budget").textContent = `₹${budget - totalSpent}`;
 
                 // Expense Table
                 const table = document.getElementById("expense-table");
@@ -190,16 +174,14 @@
                 if (expenses.length === 0) {
                     document.getElementById("no-expenses").style.display = "";
                 } else {
-                    document.getElementById("no-expenses").style.display =
-                        "none";
+                    document.getElementById("no-expenses").style.display = "none";
                     expenses.forEach((exp, idx) => {
                         const tr = document.createElement("tr");
-                        tr.className =
-                            idx % 2 === 0 ? "bg-white" : "bg-gray-50";
+                        tr.className = (idx % 2 === 0 ? "bg-white dark:bg-gray-900" : "bg-gray-50 dark:bg-gray-800");
                         tr.innerHTML = `
             <td class="py-2 px-4">${idx + 1}</td>
-            <td class="py-2 px-4">${exp.name}</td>
-            <td class="py-2 px-4 font-semibold text-gray-700">₹${exp.amount}</td>
+            <td class="py-2 px-4">${exp.name}<div class='text-xs text-gray-400 dark:text-gray-500'>${exp.category}</div></td>
+            <td class="py-2 px-4 font-semibold text-gray-700 dark:text-gray-100">₹${exp.amount}</td>
             <td class="py-2 px-4">
               <button onclick="deleteExpense(${idx})" class="text-red-600 hover:underline">Delete</button>
             </td>
@@ -208,22 +190,75 @@
                     });
                 }
 
+                // Category-wise Chart
+                renderCategoryChart();
+
                 // Breakdown
                 let breakdownHTML = "";
                 if (expenses.length > 0) {
                     const grouped = {};
                     expenses.forEach((exp) => {
-                        grouped[exp.name] =
-                            (grouped[exp.name] || 0) + exp.amount;
+                        grouped[exp.name] = (grouped[exp.name] || 0) + exp.amount;
                     });
-                    breakdownHTML =
-                        '<div class="mt-2"><span class="font-semibold">Breakdown:</span><ul class="list-disc ml-6">';
+                    breakdownHTML = '<div class="mt-2"><span class="font-semibold">Breakdown:</span><ul class="list-disc ml-6">';
                     for (const [name, amt] of Object.entries(grouped)) {
                         breakdownHTML += `<li>${name}: ₹${amt}</li>`;
                     }
                     breakdownHTML += "</ul></div>";
                 }
                 document.getElementById("breakdown").innerHTML = breakdownHTML;
+            }
+
+            // Chart.js via CDN
+            // Add Chart.js script if not present
+            if (!window.Chart) {
+                var script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+                script.onload = function() { updateUI(); };
+                document.head.appendChild(script);
+            }
+
+            function renderCategoryChart() {
+                if (!window.Chart) return;
+                const ctx = document.getElementById('categoryChart').getContext('2d');
+                // Aggregate by category
+                const catTotals = {};
+                expenses.forEach(e => {
+                    catTotals[e.category] = (catTotals[e.category] || 0) + e.amount;
+                });
+                const labels = Object.keys(catTotals);
+                const data = Object.values(catTotals);
+                const colors = [
+                    '#2563eb','#fbbf24','#ef4444','#22c55e','#a21caf','#0ea5e9','#f472b6','#f59e42','#6366f1','#14b8a6'
+                ];
+                if (categoryChart) categoryChart.destroy();
+                categoryChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: colors,
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: { display: true, position: 'bottom' },
+                            tooltip: { callbacks: { label: ctx => `${ctx.label}: ₹${ctx.raw}` } }
+                        }
+                    }
+                });
+                // Insights
+                let insight = '';
+                if (labels.length > 0) {
+                    const maxIdx = data.indexOf(Math.max(...data));
+                    const topCat = labels[maxIdx];
+                    const pct = ((data[maxIdx] / data.reduce((a,b)=>a+b,0)) * 100).toFixed(1);
+                    insight = `Top category: <b>${topCat}</b> (${pct}% of total)`;
+                } else {
+                    insight = 'No expenses to show.';
+                }
+                document.getElementById('category-insight').innerHTML = insight;
             }
             // Initial UI
             updateUI();
